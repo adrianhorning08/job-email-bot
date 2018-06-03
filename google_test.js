@@ -16,11 +16,17 @@ const creds = require('./config.js');
       let searchBox = await driver.findElement(By.tagName('input'));
       await searchBox.sendKeys('asana engineering')
       await driver.findElement(By.className('search-typeahead-v2__button typeahead-icon')).click()
-      
+
+      await driver.wait(until.elementLocated(By.className('search-results-container')), 50000);
+      let results = await driver.findElements(By.className('name actor-name'))
+      results.map(async el => {
+        let text = await el.getText();
+        console.log(text);
+      })
     } catch(err) {
       console.log(err);
     }
   } finally {
-    // await driver.quit();
+    await driver.quit();
   }
 })();
