@@ -19,12 +19,9 @@ const creds = require('./config.js');
       await driver.wait(until.elementLocated(By.className('search-results-container')), 50000);
       let results = await driver.findElements(By.className('name actor-name'))
       await Promise.all(results.map(async el => {
-        try {
-          let text = await el.getText();
-          console.log(text);
-        } catch (e) {
-          console.log(e);
-        }
+        let text = await el.getText();
+        console.log(text);
+
       }))
     } catch(err) {
       console.log(err);
