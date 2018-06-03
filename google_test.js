@@ -1,12 +1,11 @@
 const {Builder, By, Key, until} = require('selenium-webdriver');
 const creds = require('./config.js');
 
-// sometimes it doesn't work. Gotta somehow try an action again if it fails
-
 (async function example() {
   let driver = await new Builder().forBrowser('chrome').build();
   try {
     await driver.get('https://www.linkedin.com/');
+    await driver.wait(until.elementLocated(By.id('login-email')), 50000);
     let email = await driver.findElement(By.id('login-email'));
     let password = await driver.findElement(By.id('login-password'));
     email.sendKeys(creds.username)
@@ -19,10 +18,14 @@ const creds = require('./config.js');
 
       await driver.wait(until.elementLocated(By.className('search-results-container')), 50000);
       let results = await driver.findElements(By.className('name actor-name'))
-      results.map(async el => {
-        let text = await el.getText();
-        console.log(text);
-      })
+      await Promise.all(results.map(async el => {
+        try {
+          let text = await el.getText();
+          console.log(text);
+        } catch (e) {
+          console.log(e);
+        }
+      }))
     } catch(err) {
       console.log(err);
     }
