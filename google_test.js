@@ -8,10 +8,12 @@ const creds = require('./config.js');
     let email = await driver.findElement(By.id('login-email'));
     let password = await driver.findElement(By.id('login-password'));
     email.sendKeys(creds.username)
-    console.log(creds.password);
     password.sendKeys(creds.password)
     try {
       await driver.findElement(By.id('login-submit')).click();
+      let searchBox = await driver.findElement(By.tagName('input'));
+      searchBox.sendKeys('asana')
+      let searchButton = await driver.findElement(By.className('search-typeahead-v2__button typeahead-icon')).click();
     } catch(err) {
       console.log(err);
     }
