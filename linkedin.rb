@@ -26,8 +26,25 @@ driver.find_element(:id, "login-submit").click
 
 driver.get "https://www.linkedin.com/search/results/people/?company=&facetGeoRegion=%5B%22us%3A84%22%5D&firstName=A&lastName=&origin=FACETED_SEARCH&school=&title=CTO"
 
-results = driver.find_element(:xpath, "//a[@href='/in']")
-print results
+names = Hash.new
+
+(0...5000).step(200) do |i|
+    driver.execute_script("scroll(0,#{i})")
+    results = driver.find_elements(:class, "name")
+    results.each do |res|
+      if !names[res.text]
+        names[res.text] = true
+      end
+    end
+end
+names.each_key do |k|
+  print k
+end
+
+def extract_names(arr)
+
+end
+
 
 
 driver.quit
