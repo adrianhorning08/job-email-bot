@@ -116,7 +116,6 @@ class GetCompanyLinkedinPage
 
   def loop_over_co_pages
     @company_pages.each do |page|
-      puts "I ran"
       @driver.get page
       scrape_company_page
     end
@@ -132,7 +131,50 @@ class GetCompanyLinkedinPage
     loop_over_co_pages
     print @company_links
   end
-
 end
 
-GetCompanyLinkedinPage.new
+class PossibleEmailAddresses
+
+  def initialize
+    @possible_emails = []
+    @company_website = 'http://rocketrip.com/'
+    @first_name = 'John'
+    @last_name = 'Smith'
+  end
+
+  def get_everything_after_at_sign
+    # gotta be a way to combine these regex's....
+    @company_website = @company_website.gsub(/^(?:https?:\/\/)?(?:www\.)?/, "").gsub(/\/$/,'')
+  end
+
+  def generating_email_addresses
+    # what if their name has a -?? ie Pierre-Dimitri
+    @first_name = @first_name.downcase
+    @last_name = @last_name.downcase
+
+    @possible_emails << "#{@first_name}.#{@last_name}@#{@company_website}" #john.smith@company.com
+    @possible_emails << "#{@first_name[0..1]}.#{@last_name}@#{@company_website}" #jo.smith@company.com
+    @possible_emails << "#{@first_name[0]}.#{@last_name}@#{@company_website}" #j.smith@company.com
+    @possible_emails << "#{@last_name}.#{@first_name[0]}@#{@company_website}" #smith.j@company.com
+    @possible_emails << "#{@last_name}.#{@first_name}@#{@company_website}" #smith.john@company.com
+    @possible_emails << "#{@first_name}#{@last_name}@#{@company_website}" #johnsmith@company.com
+    @possible_emails << "#{@first_name[0..1]}#{@last_name}@#{@company_website}" #josmith@company.com
+    @possible_emails << "#{@first_name[0]}#{@last_name}@#{@company_website}" #jsmith@company.com
+    @possible_emails << "#{@first_name[0]}.#{@last_name}@#{@company_website}" #j.smith@company.com
+    @possible_emails << "#{@first_name[0]}#{@last_name[0]}@#{@company_website}" #js@company.com
+    @possible_emails << "#{@first_name[0]}.#{@last_name[0]}@#{@company_website}" #j.s@company.com
+    @possible_emails << "#{@last_name}#{@first_name[0]}@#{@company_website}" #smithj@company.com
+    @possible_emails << "#{@last_name}.#{@first_name[0]}@#{@company_website}" #smith.j@company.com
+    @possible_emails << "#{@last_name}@#{@company_website}" #smith@company.com
+    @possible_emails << "#{@first_name}@#{@company_website}" #john@company.com
+    @possible_emails << "#{@first_name[0]}@#{@company_website}" #j@company.com
+  end
+
+  def run
+    get_everything_after_at_sign
+    generating_email_addresses
+    puts @possible_emails
+  end
+end
+
+PossibleEmailAddresses.new.run
